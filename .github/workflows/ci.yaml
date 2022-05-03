@@ -7,10 +7,15 @@ on:
 jobs:
   check-application:
     runs-on: ubuntu-latest
+      # posso ter ambientes diferentes de teste, nesse caso, eu testo o meu projeto com o GO na versão 1.15 e 1.15
+      # a palavra "go" funciona como se fosse uma key
+    strategy:
+      matrix:
+        go: [ '1.14', '1.15' ]
     steps: # para usar action eu uso o -uses e para rodar comandos eu uso o -run
       - uses: actions/checkout@v2 # essa action pega os dados do que eu acabei de subir e vai baixar nessa máquina ubuntu
       - uses: actions/setup-go@v2 # essa action vai instalar o go no meu ambiente
         with:
-          go-version: 1.15 # qual a versão do go que eu quero instalar
+          go-version: ${{ matrix.go }} # qual a versão do go que eu quero instalar
       - run: go test
       - run: go run math.go
