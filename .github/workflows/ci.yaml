@@ -9,13 +9,25 @@ jobs:
     runs-on: ubuntu-latest
       # posso ter ambientes diferentes de teste, nesse caso, eu testo o meu projeto com o GO na versão 1.15 e 1.15
       # a palavra "go" funciona como se fosse uma key
-    strategy:
-      matrix:
-        go: [ '1.14', '1.15' ]
+    #strategy:
+    #  matrix:
+    #    go: [ '1.14', '1.15' ]
     steps: # para usar action eu uso o -uses e para rodar comandos eu uso o -run
       - uses: actions/checkout@v2 # essa action pega os dados do que eu acabei de subir e vai baixar nessa máquina ubuntu
       - uses: actions/setup-go@v2 # essa action vai instalar o go no meu ambiente
         with:
-          go-version: ${{ matrix.go }} # qual a versão do go que eu quero instalar
+          go-version: 1.15 #${{ matrix.go }} # qual a versão do go que eu quero instalar
       - run: go test
       - run: go run math.go
+      #Gerar o build da imagem
+      - name: Set up QEMU # Coloca um nome no passo que está sendo executado
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        id: build_build # Quando eu coloco um id, eu posso pegar o resultado dessa action e usar dentro de um outro step
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          tags: leoguarilha/fc-ci-go:latest # Depois do build, vai gerar uma imagem com esse nome na máquina local que temos no github actions
