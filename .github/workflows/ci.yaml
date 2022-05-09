@@ -24,10 +24,16 @@ jobs:
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+      #Faz login no dockerhub
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }} # configurado no github: dentro do repositório > settings > secrets > actions
+          password: ${{ secrets.DOCKER_TOKEN }} # gera esse token no dockerhub > account settings > security > access token
 
       - name: Build and push
         id: build_build # Quando eu coloco um id, eu posso pegar o resultado dessa action e usar dentro de um outro step
         uses: docker/build-push-action@v2
         with:
-          push: false
+          push: true
           tags: leoguarilha/fc-ci-go:latest # Depois do build, vai gerar uma imagem com esse nome na máquina local que temos no github actions
